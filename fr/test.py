@@ -42,11 +42,6 @@ def filter(dic:dict, func):
     return {k: v for k, v in dic.items() if func(v)}
 
 
-def sort(dic:dict, func):
-    #TODO sort the dict by the function
-    return
-
-
 def get_qnts_by_items():
     
     dic = {}
@@ -61,7 +56,8 @@ def get_qnts_by_items():
                 "name" : values["market_hash_name"],
                 # "name_color" : "#" + values["name_color"],
                 "type": values["type"],
-                "price": 0.00
+                "price": 0.00,
+                "total price": 0.00
             }
             dic[i] = temp
     
@@ -76,7 +72,6 @@ def get_qnts_by_items():
             pass
 
 
-    #TODO sort the dict by quantity
     dic = dict(sorted(dic.items(), key=lambda item: item[1]["quantity"], reverse=True))
 
     total = 0.0
@@ -86,23 +81,33 @@ def get_qnts_by_items():
             try:
                 price_url = f'https://steamcommunity.com/market/priceoverview/?currency=3&appid=730&market_hash_name={dic[i]["name"]}'
                 response = requests.get(price_url, headers=headers)
-                price = json.loads(response.content)['lowest_price'][:-1].replace(",",".")
-                print(dic[i]["quantity"], dic[i]["name"], price+"€")
-                total += dic[i]["quantity"] * float(price)
-                dic[i]["price"] = float(price)
+                price = float(json.loads(response.content)['lowest_price'][:-1].replace(",","."))
+                quantity = dic[i]["quantity"]
+                total_price = round(quantity * price,2)
+                
+                dic[i]["price"] = price
+                dic[i]["total price"] = total_price
+                
+                total += total_price
+                
+                print(str(total_price)+"€", dic[i]["name"])
+                
                 break
-            except:
+            except Exception as e:
                 print(response.content)
+                print(e)
                 sleep(60)
         loop -= 1
         if loop == 0:
             break
 
+    dic = dict(sorted(dic.items(), key=lambda item: item[1]["total price"], reverse=True))
+
     print("total" , round(total, 2) , "€")
 
     file = open("inv.json",'w',encoding='utf-8')
     file.write(json.dumps(dic, indent=4))
-    file.write('\n"total": ' + (str)(round(total, 2)) + "€\n")
+    file.write('\n"total": ' + str(total) + "€\n")
     file.close()
 
 
