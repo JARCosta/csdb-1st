@@ -7,7 +7,7 @@ from domain.inventory import inventoryImpl
 
 from utils.dbConnection import get_db_connection_string
 from utils.log import log_join
-from domain import serverImpl
+import serverImpl
 
 def load_prices():
     inv_map = {}
