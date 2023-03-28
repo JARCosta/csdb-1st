@@ -13,7 +13,7 @@ import time
 from utils.dbConnection import get_db_connection_string
 from utils.log import log_join
 from utils.headers import HEADERS
-import server.server as server
+import server
 
 def get_prices():
     dir_path = './saves/prices'

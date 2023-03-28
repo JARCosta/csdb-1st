@@ -29,13 +29,9 @@ def inventory():
 
 @app.route("/inventory/update", methods=['POST'])
 def inv_update():
-    if request.method == 'POST':
-        steamid = request.form["steamid"]
-        json = request.form["json"]
-        if json == "null":
-            return domain.inventory.update(steamid, None)
-        else:
-            return domain.inventory.update(steamid, json)
+    steamid = request.form["steamid"]
+    json = request.form["json"] or None
+    return domain.inventory.update(steamid, json)
 
 
 @app.route("/prices")

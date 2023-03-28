@@ -3,7 +3,7 @@ __version__ = '1.0'
 MAX_RETRIES = 5
 
 # Import modules and sub-packages
-from .serverImpl import *
+from .server import *
 from .domain import *
 from .utils import *
 

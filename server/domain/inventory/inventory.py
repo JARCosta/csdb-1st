@@ -9,7 +9,7 @@ from domain.inventory import inventoryImpl
 
 from utils.dbConnection import get_db_connection_string
 from utils.log import log_join
-import server.server as server
+import server
 import domain
 from utils.headers import HEADERS
 
