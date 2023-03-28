@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import json
 import os
 from flask import render_template, session
@@ -11,7 +9,7 @@ from domain.inventory import inventoryImpl
 
 from utils.dbConnection import get_db_connection_string
 from utils.log import log_join
-import serverImpl
+import v2 as v2
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
@@ -31,7 +29,7 @@ def update_inv():
 
 def get_page():
     data = []
-    for i in serverImpl.get_steam_profiles():
+    for i in v2.get_steam_profiles():
         data.append(i)
 
     return render_template("inventory/steamids.html", title="Inventory", cursor=data)

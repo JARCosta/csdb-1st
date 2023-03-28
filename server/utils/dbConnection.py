@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import json
 
 def get_db_connection_string():

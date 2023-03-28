@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from flask import render_template, session
 import psycopg2
 from psycopg2.extras import DictCursor
