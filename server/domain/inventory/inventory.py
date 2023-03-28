@@ -61,6 +61,14 @@ def update(steamid):
     return render_template("redirect_to_root.html", title="Update Prices")
 
 
+def update(steamid, js):
+    content = json.loads(js)
+    inventory, descriptions = content['rgInventory'], content['rgDescriptions']
+    
+    inv = inventoryImpl.json_to_inv(inventory, descriptions)
 
+    inventoryImpl.save_inv(steamid, inv)
+
+    return render_template("redirect_to_root.html", title="Update Prices")
 
 

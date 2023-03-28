@@ -27,11 +27,15 @@ def inventory():
     else:
         return domain.inventory.get_page()
 
-@app.route("/inventory/update")
+@app.route("/inventory/update", methods=['POST'])
 def inv_update():
-    steamid = request.args.get('steamid')
-    return domain.inventory.update(steamid)
-
+    if request.method == 'POST':
+        steamid = request.form["steamid"]
+        print(steamid)
+        json = request.form["json"]
+        if json:
+            return domain.inventory.update(steamid, json)
+        return domain.inventory.update(steamid)
 
 @app.route("/prices")
 def prices():
