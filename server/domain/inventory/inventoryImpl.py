@@ -24,12 +24,16 @@ def get_inventory(STEAMID: str):
     dir_path = './saves/' + STEAMID
     files = sorted(os.listdir(dir_path))
     files.reverse()
-    print("loading last save:", files[0])
-    file = open(dir_path + "/" + files[0], 'r',encoding='utf-8')
-    inv = dict(json.load(file))
-    file.close()
-    inv = dict(sorted(inv.items(), key=lambda item: item[1]["total price"], reverse=True))
-    return inv
+    try:
+        print("loading last save:", files[0])
+        file = open(dir_path + "/" + files[0], 'r',encoding='utf-8')
+        inv = dict(json.load(file))
+        file.close()
+        inv = dict(sorted(inv.items(), key=lambda item: item[1]["quantity"], reverse=True))
+        return inv
+    except IndexError:
+        # print("no save found")
+        return {}
 
 def json_to_inv(inventory: dict, descriptions: dict):
     inv = {}
@@ -42,10 +46,10 @@ def json_to_inv(inventory: dict, descriptions: dict):
                     "name" : values["market_hash_name"],
                     # "name_color" : "#" + values["name_color"],
                     "type": values["type"],
-                    "price": 0.00,
-                    "total price": 0.00
+                    # "price": 0.00,
+                    # "total price": 0.00
                 }
-            inv[item] = temp
+            inv[values["market_hash_name"]] = temp
 
     for item in inventory:
         item_key = inventory[item]['classid'] + "_" + inventory[item]['instanceid']
@@ -66,3 +70,7 @@ def save_inv(STEAMID: str, inv: dict):
     with open(file_name,'w',encoding='utf-8') as file:
         file.write(json.dumps(inv, indent=4))
         file.close()
+
+
+
+

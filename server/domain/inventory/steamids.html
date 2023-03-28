@@ -27,20 +27,24 @@
             </tr>
             {% for item in cursor %}
             <tr>
-                    <td><a href = "inventory/update?steamid={{item['steamid']}}"><img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png"></a></td>
-                    <td>{{item['name']}}</td>
-                    <td><a href="inventory?steamid={{item['steamid']}}">{{item['steamid']}}</a></td>
-                    <td>
-                        <form action="/inventory/update" method="POST" style="margin: auto;">
-                            <input type="hidden" name="steamid" value="{{item['steamid']}}">
-                            <input type="text" name="json" required>
-                            <button type="submit" >Submit</button>  
-                        </form>
-                    </td>
-                    <td>
-                        <a href = "https://steamcommunity.com/profiles/{{item['steamid']}}/inventory/json/730/2">redirect</a>
-                    </td>
-                </tr>
+                <td><form action="/inventory/update" method="POST" style="margin: auto;">
+                        <button type="hidden" name="steamid" value="{{item['steamid']}}" style="background: transparent;border: none;">
+                            <img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png">
+                        </button>
+                        <input type="hidden" name="json" value="null">
+                    
+                </form></td>
+                <td>{{item['name']}}</td>
+                <td><a href="inventory?steamid={{item['steamid']}}">{{item['steamid']}}</a></td>
+                <td><form action="/inventory/update" method="POST" style="margin: auto;">
+                    <input type="hidden" name="steamid" value="{{item['steamid']}}">
+                    <input type="text" name="json" required>
+                    <button type="submit" >Submit</button>  
+                </form></td>
+                <td>
+                    <a href = "https://steamcommunity.com/profiles/{{item['steamid']}}/inventory/json/730/2">redirect</a>
+                </td>
+            </tr>
             {% endfor %}
         </table>
     </div>
