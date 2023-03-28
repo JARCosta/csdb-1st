@@ -17,14 +17,21 @@
     </div>
     <div class="App-body">
         <table>
-            <tr>
-                <td><a href = "prices/update"><img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png"></a></td>
-                <td><a href="prices">Prices</a></td>
+            <tr>                
+                <!-- <td><a href="prices/">Quantity</a></td> TODO /prices(/show)?sort=quantity-->
+                <td>Quantity</td>
+                <td>Name</td>                
+                <td>Price</td>
+                <td>Total Price</td>
             </tr>
-            <tr>
-                <td></td>
-                <td><a href="inventory">Inventory</a></td>
-            </tr>
+            {% for item in cursor %}
+                <tr>
+                    <td>{{item["quantity"]}}</td>
+                    <td>{{item["name"]}}</td>
+                    <td>{{item["price"]}}</td>
+                    <td>{{item["total price"]}}</td>
+                </tr>
+            {% endfor %}
         </table>
     </div>
 

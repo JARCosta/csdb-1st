@@ -21,6 +21,28 @@ def root():
     return domain.root.get_main_page()
 
 
+@app.route("/inventory")
+def inventory():
+    steamid = request.args.get('steamid')
+    if steamid:
+        return domain.inventory.get_inventory_for_steamid(steamid)
+    else:
+        return domain.inventory.get_page()
+
+@app.route("/inventory/update")
+def inv_update():
+    steamid = request.args.get('steamid')
+    return domain.inventory.update(steamid)
+
+
+@app.route("/prices")
+def prices():
+    return domain.prices.get_page()
+
+@app.route("/prices/update")
+def prices_update():
+    return domain.prices.update()
+
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
 

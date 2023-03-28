@@ -8,6 +8,9 @@ from utils.dbConnection import get_db_connection_string
 from utils.log import log_join
 
 
+def update_inv():
+    return render_template("redirect_to_root.html", title="Update Inventory")
+
 def get_main_page():
     dbConn = None
     cursor = None
@@ -34,28 +37,5 @@ def get_main_page():
     # except Exception as e:
     #     raise e  # Renders a page with the error.
     finally:
-        cursor.close()
-        dbConn.close()
-
-
-def clear():
-    dbConn = None
-    cursor = None
-    try:
-        dbConn = psycopg2.connect(get_db_connection_string())
-        cursor = dbConn.cursor(cursor_factory=DictCursor)
-        query = """
-            DELETE FROM plays WHERE 1=1;
-            DELETE FROM player WHERE 1=1;
-            DELETE FROM game WHERE 1=1;
-            DELETE FROM team WHERE 1=1;
-            DELETE FROM contract WHERE 1=1;
-        """
-        cursor.execute(query)
-        return query
-    except Exception as e:
-        raise e  # Renders a page with the error.
-    finally:
-        dbConn.commit()
         cursor.close()
         dbConn.close()

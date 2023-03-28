@@ -12,7 +12,8 @@ headers = {
     'Accept-Encoding': 'gzip, deflate, br',
     'Referer': 'https://steamcommunity.com/',
     'Connection': 'keep-alive',
-    'Cookie':'sessionid=e02317942bd01b0cc73283e8; timezoneOffset=0,0; cookieSettings={"version":1,"preference_state":2,"content_customization":null,"valve_analytics":null,"third_party_analytics":null,"third_party_content":null,"utm_enabled":true}; steamCountry=PT|7dce34e55c2187275d8dda742200b938; steamLoginSecure=76561198285623099||eyAidHlwIjogIkpXVCIsICJhbGciOiAiRWREU0EiIH0.eyAiaXNzIjogInI6MEQyMl8yMjQ3RjZFM19ERTFDOSIsICJzdWIiOiAiNzY1NjExOTgyODU2MjMwOTkiLCAiYXVkIjogWyAid2ViIiBdLCAiZXhwIjogMTY3OTg2ODIwOSwgIm5iZiI6IDE2NzExNDAwMDksICJpYXQiOiAxNjc5NzgwMDA5LCAianRpIjogIjBEMjdfMjI0N0Y3MEFfREEyMDIiLCAib2F0IjogMTY3OTc4MDAwOSwgInJ0X2V4cCI6IDE2OTc4Mzc0MDMsICJwZXIiOiAwLCAiaXBfc3ViamVjdCI6ICI5NS45My4yNDIuMTQ0IiwgImlwX2NvbmZpcm1lciI6ICI5NS45My4yNDIuMTQ0IiB9.2H7Bjcn5I6wK12dHdNi-fKDM7J87xfBr-lkYMUfeBBbzJxtMm21xj3IiMLVHTa_XglX1ygjJSyYK7IztbYKNBg; browserid=2825485845585510381; webTradeEligibility={"allowed":1,"allowed_at_time":0,"steamguard_required_days":15,"new_device_cooldown_days":0,"time_checked":1679780044}; strInventoryLastContext=730_2'
+    # TODO in server: get cookies from browser
+    'Cookie':'''sessionid=e02317942bd01b0cc73283e8; cookieSettings={"version":1,"preference_state":2,"content_customization":null,"valve_analytics":null,"third_party_analytics":null,"third_party_content":null,"utm_enabled":true}; browserid=2825485845585510381; webTradeEligibility={"allowed":1,"allowed_at_time":0,"steamguard_required_days":15,"new_device_cooldown_days":0,"time_checked":1679780044}; strInventoryLastContext=730_2; timezoneOffset=3600,0; steamDidLoginRefresh=1679914832; steamCountry=PT|5f29ea7663fb0e8818d774d49c5bafca; steamLoginSecure=76561198285623099||eyAidHlwIjogIkpXVCIsICJhbGciOiAiRWREU0EiIH0.eyAiaXNzIjogInI6MEQyMl8yMjQ3RjZFM19ERTFDOSIsICJzdWIiOiAiNzY1NjExOTgyODU2MjMwOTkiLCAiYXVkIjogWyAid2ViIiBdLCAiZXhwIjogMTY4MDAwMjcwMiwgIm5iZiI6IDE2NzEyNzQ4MzMsICJpYXQiOiAxNjc5OTE0ODMzLCAianRpIjogIjBEMjdfMjI0N0Y4ODBfMzAwOTgiLCAib2F0IjogMTY3OTc4MDAwOSwgInJ0X2V4cCI6IDE2OTc4Mzc0MDMsICJwZXIiOiAwLCAiaXBfc3ViamVjdCI6ICI5NS45My4yNDIuMTQ0IiwgImlwX2NvbmZpcm1lciI6ICI5NS45My4yNDIuMTQ0IiB9.rWBjLOET3hyvX61cCp79gJx7KiMUVbtOzoeZ0lLsURcJa4P37JmjVv5HGxzCm6uY9SQZCvBa_kQBJTDRAUO4CQ'''
 }
 
 
@@ -22,9 +23,9 @@ def get_els():
 
 def import_items():
     response = requests.get(url, headers=headers)
-    descriptions = json.loads(response.content)['rgInventory']
+    inventory = json.loads(response.content)['rgInventory']
     file = open("qnts.json",'w',encoding='utf-8')
-    file.write(json.dumps(descriptions, indent=4))
+    file.write(json.dumps(inventory, indent=4))
     file.close()
 
 
@@ -94,8 +95,7 @@ def get_qnts_by_items():
                 
                 break
             except Exception as e:
-                print(response.content)
-                print(e)
+                print(e , "sleeping for 60 seconds")
                 sleep(60)
         loop -= 1
         if loop == 0:
@@ -105,17 +105,17 @@ def get_qnts_by_items():
 
     print("total" , round(total, 2) , "€")
 
-    file = open("inv.json",'w',encoding='utf-8')
+    file = open("log/inv.json",'w',encoding='utf-8')
     file.write(json.dumps(dic, indent=4))
     file.write('\n"total": ' + str(total) + "€\n")
     file.close()
 
 
-# get_els()
+get_els()
 
 # import_items()
 # import_descs()
 
-get_qnts_by_items()
+# get_qnts_by_items()
 
 
