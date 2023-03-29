@@ -46,5 +46,5 @@ def add_item_price(item_name: str):
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     database.add_item_price(item_name, price, time)
 
-def get_prices():
-    return [{"name":i[0],"quantity":i[2],"price":i[1]} for i in database.get_prices()]
+def get_latest_prices():
+    return [{"name":i[0],"quantity":i[2],"price":i[1]} for i in database.get_latest_prices()]

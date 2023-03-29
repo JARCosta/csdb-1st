@@ -8,7 +8,7 @@ import server
 
 
 def display():
-    data = server.get_prices()
+    data = server.get_latest_prices()
     return render_template("prices/prices.html", title="Prices", cursor=data)
 
 

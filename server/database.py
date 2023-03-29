@@ -96,12 +96,23 @@ def get_item_list():
         cursor.close()
         dbConn.close()
 
-def get_prices():
+def get_latest_prices():
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"SELECT item_prices.item, price, quantity FROM item_prices JOIN profile_items on profile_items.item = item_prices.item;")
+        querry = """
+            SELECT ip.item, ip.date, ip.price
+            FROM item_prices ip
+            JOIN (
+            SELECT item, MAX(date) AS max_date
+            FROM item_prices
+            GROUP BY item
+            ) latest ON ip.item = latest.item AND ip.date = latest.max_date;
+            """
+        # cursor.execute(f"SELECT item_prices.item, price, quantity FROM item_prices JOIN profile_items on profile_items.item = item_prices.item;")
+        cursor.execute(querry)
         return cursor.fetchall()
     finally:
         cursor.close()
         dbConn.close()
+
