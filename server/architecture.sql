@@ -1,6 +1,6 @@
 
 
-drop table if exists item_price cascade;
+drop table if exists item_prices cascade;
 drop table if exists profile_items cascade;
 drop table if exists items cascade;
 drop table if exists profiles cascade;
@@ -27,10 +27,10 @@ CREATE TABLE profile_items (
   FOREIGN KEY (item) REFERENCES items(name)
 );
 
-CREATE TABLE item_price (
+CREATE TABLE item_prices (
   item VARCHAR(255) NOT NULL,
   -- date VARCHAR(255) NOT NULL,
-  date DATE NOT NULL,
+  date TIMESTAMP NOT NULL,
 	price DECIMAL(10,2) NOT NULL,
 	PRIMARY KEY (item, date),
   FOREIGN KEY (item) REFERENCES items(name)

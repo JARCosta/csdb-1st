@@ -28,7 +28,10 @@ def inventory():
 @app.route("/inventory/update", methods=['POST'])
 def inv_update():
     steamid = request.form["steamid"]
-    json = request.form["json"] or None
+    try:
+        json = request.form["json"]
+    except KeyError:
+        json = None
     return domain.inventory.update(steamid, json)
 
 
@@ -41,5 +44,6 @@ def prices_update():
     return domain.prices.update()
 
 if __name__ == '__main__':
+    server.__init__()
     app.run(debug=True, use_reloader=True)
 

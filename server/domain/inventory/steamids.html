@@ -21,9 +21,8 @@
             <tr>
                 <td>Auto</td>
                 <td>Name</td>
-                <td>SteamID</td>
-                <td></td>
-                <td></td>
+                <td>Import</td>
+                <td>Json</td>
             </tr>
             {% for item in cursor %}
             <tr>
@@ -32,8 +31,7 @@
                             <img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png">
                         </button>
                 </form></td>
-                <td>{{item['name']}}</td>
-                <td><a href="inventory?steamid={{item['steamid']}}">{{item['steamid']}}</a></td>
+                <td><a href="inventory?steamid={{item['steamid']}}">{{item['name']}}</a></td>
                 <td><form action="/inventory/update" method="POST" style="margin: auto;">
                     <input type="hidden" name="steamid" value="{{item['steamid']}}">
                     <input type="text" name="json" required>
