@@ -31,6 +31,16 @@ def add_item(name: str, type: str):
         cursor.close()
         dbConn.close()
 
+def add_item_price(item_name: str, price: int, date: str):
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        cursor.execute(f"INSERT INTO item_prices (item, price) VALUES ('{item_name}', '{price}');")
+        print(f"added price {price} to item {item_name}")
+    finally:
+        dbConn.commit()
+        cursor.close()
+        dbConn.close()
 
 def add_to_inventory(steamid: str, item_name: str, quantity: int):
     try:
@@ -43,12 +53,36 @@ def add_to_inventory(steamid: str, item_name: str, quantity: int):
         cursor.close()
         dbConn.close()
 
-def add_item_price(item_name: str, price: int, date: str):
+def get_inventory(steamid: str):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"INSERT INTO item_prices (item, price) VALUES ('{item_name}', '{price}');")
-        print(f"added price {price} to item {item_name}")
+        cursor.execute(f"SELECT * FROM profile_items WHERE profile = '{steamid}';")
+        return cursor.fetchall()
+    finally:
+        dbConn.commit()
+        cursor.close()
+        dbConn.close()
+
+def get_item_list():
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        cursor.execute(f"SELECT * FROM items natural join item_prices;")
+        return cursor.fetchall()
+    finally:
+        dbConn.commit()
+        cursor.close()
+        dbConn.close()
+
+def get_item_price(item_names:list):
+    # querry = "START TRANSACTION;"
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        # querry += f"SELECT * FROM item_prices WHERE item in {tuple(item_names)};"
+        cursor.execute(f"SELECT * FROM item_prices WHERE item in {tuple(item_names)};")
+        return cursor.fetchall()
     finally:
         dbConn.commit()
         cursor.close()
