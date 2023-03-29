@@ -2,6 +2,7 @@ import hashlib
 import time
 from flask import Flask, request, session
 import domain
+import server
 
 app = Flask(__name__, template_folder='domain', static_folder='domain/static')
 app.secret_key = 'your_secret_key'
@@ -16,16 +17,13 @@ def before_request():
 
 @app.route("/")
 def root():
-    return domain.root.get_main_page()
+    return domain.root.display()
 
 
-@app.route("/inventory")
+@app.route("/inventory", methods=["GET"])
 def inventory():
-    steamid = request.args.get('steamid')
-    if steamid:
-        return domain.inventory.get_inventory_for_steamid(steamid)
-    else:
-        return domain.inventory.get_page()
+    steamid = request.args.get('steamid') or None
+    return domain.inventory.display(steamid)
 
 @app.route("/inventory/update", methods=['POST'])
 def inv_update():
@@ -36,7 +34,7 @@ def inv_update():
 
 @app.route("/prices")
 def prices():
-    return domain.prices.get_page()
+    return domain.prices.display()
 
 @app.route("/prices/update")
 def prices_update():

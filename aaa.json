@@ -1,0 +1,22 @@
+{
+    "1": {
+        "item": {
+            "name": "Item 1",
+            "type": "Type A",
+            "price": 10.0
+        },
+        "quantity": 5,
+        "price": 10.0,
+        "total_price": 50.0
+    },
+    "2": {
+        "item": {
+            "name": "Item 2",
+            "type": "Type B",
+            "price": 20.0
+        },
+        "quantity": 3,
+        "price": 20.0,
+        "total_price": 60.0
+    }
+}

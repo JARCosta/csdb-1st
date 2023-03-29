@@ -18,6 +18,16 @@ def update_inv():
     #TODO: implement
     return render_template("redirect_to_root.html", title="Update Inventory")
 
+def display(steamid: str):
+    if not steamid:
+        data = [{"name": user.name,"steamid": user.steamid} for user in server.get_users()]
+        return render_template("inventory/steamids.html", title="Inventory", cursor=data)
+    else:
+        inv = server.get_user_inventory(steamid)
+        print(inv)
+        data = []
+        return render_template("inventory/inventory.html", title="Inventory", cursor=data)
+
 
 def get_page():
     data = []

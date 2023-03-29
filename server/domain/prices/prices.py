@@ -32,19 +32,20 @@ def get_prices():
 
 def load_items():
     item_map = {}
-    for steamid in server.get_steam_ids():
+    for steamid in server.get_ids():
         inv = inventoryImpl.get_inventory(steamid)
         for index in inv:
             try:
                 item_map[inv[index]["name"]]["quantity"] += inv[index]["quantity"]
-            except:
+                # print("adding",inv[index]["quantity"],"quantity to item",inv[index]["name"])
+            except KeyError:
                 item_map[inv[index]["name"]] = inv[index]
-    
-    item_map = dict(sorted(inv.items(), key=lambda item: item[1]["quantity"], reverse=True))
+                # print("adding item",inv[index]["name"])
+    item_map = dict(sorted(item_map.items(), key=lambda item: item[1]["quantity"], reverse=True))
     return item_map # has all the items to be updated
 
 
-def get_page():
+def display():
     data = []
     dic = load_items()
     # inv = dict(sorted(dic.items(), key=lambda item: item[1]["total price"], reverse=True))
@@ -52,6 +53,7 @@ def get_page():
     
     for i in inv:
         data.append(inv[i])
+    
     return render_template("prices/prices.html", title="Prices", cursor=data)
 
 
