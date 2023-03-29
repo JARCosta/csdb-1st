@@ -12,10 +12,13 @@ def display(steamid: str):
         data = [{"name": user["name"],"steamid": user["steamid"]} for user in server.get_users()]
         return render_template("inventory/steamids.html", title="Inventory", cursor=data)
     else:
-        data = server.get_inventory(steamid)
-        # print(steamid)
-        print(data)
-        # data = inv
+        data = []
+        for i in server.get_inventory(steamid):
+            temp = i
+            temp["total price"] = round( i["quantity"] * i["price"] ,2)
+            data.append(temp)
+        data.sort(key=lambda x: x['total price'])
+        data.reverse()
         return render_template("inventory/inventory.html", title="Inventory", cursor=data)
 
 
@@ -31,7 +34,7 @@ def update(steamid, js):
     # for i in inv:
     #     print(i, inv[i])
     server.set_inventory(steamid, inv)
-    inventoryImpl.save_inv(steamid, inv)
+    # inventoryImpl.save_inv(steamid, inv)
 
     return render_template("redirect_to_root.html", title="Update Prices")
 

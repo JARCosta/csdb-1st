@@ -29,7 +29,7 @@ def get_users():
 
 
 def get_inventory(steamid: str):
-    return [{"user":i[0],"name":i[1],"quantity":i[2],"price":i[3]} for i in database.get_inventory(steamid)]
+    return [{"name":i[0],"quantity":i[1],"price":i[2]} for i in database.get_inventory(steamid)]
 
 def set_inventory(steamid: str, inventory: dict):
     return database.set_inventory(steamid, inventory)

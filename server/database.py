@@ -55,6 +55,7 @@ def add_to_inventory(steamid: str, item_name: str, quantity: int):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
+        print(f"adding item {item_name} to inventory of {steamid}")
         cursor.execute(f"INSERT INTO profile_items (profile, item, quantity) VALUES ('{steamid}', '{item_name}','{quantity}');")
         print(f"added item {item_name} to inventory of {steamid}")
     finally:
@@ -67,9 +68,10 @@ def set_inventory(steamid: str, inventory: dict):
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
         cursor.execute(f"DELETE FROM profile_items WHERE profile = '{steamid}';")
+        #TODO commit cursor before adding stuff or do transaction
         for item_name in inventory:
-            add_item(inventory[item_name]["name"], inventory[item_name]["type"])
-            add_to_inventory(steamid, inventory[item_name]["name"], inventory[item_name]["quantity"])
+            add_item(item_name, inventory[item_name]["type"])
+            add_to_inventory(steamid, item_name, inventory[item_name]["quantity"])
     finally:
         dbConn.commit()
         cursor.close()
@@ -80,7 +82,17 @@ def get_inventory(steamid: str):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"SELECT profile, profile_items.item, quantity, price, type, date FROM profile_items JOIN items on item = items.name join item_price on profile_items.item=item_price.item WHERE profile = '{steamid}' order by date;")
+        querry = """
+            SELECT ip.item, quantity, price
+            FROM item_prices ip
+            JOIN (
+            SELECT item, MAX(date) AS max_date
+            FROM item_prices
+            GROUP BY item
+            ) latest ON ip.item = latest.item AND ip.date = latest.max_date join profile_items on profile_items.item = ip.item;
+            """
+        # cursor.execute(f"SELECT profile, profile_items.item, quantity, price, type, date FROM profile_items JOIN items on item = items.name join item_price on profile_items.item=item_price.item WHERE profile = '{steamid}' order by date;")
+        cursor.execute(querry)
         return cursor.fetchall()
     finally:
         cursor.close()

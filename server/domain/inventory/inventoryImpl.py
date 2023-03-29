@@ -34,5 +34,15 @@ def json_to_inv(inventory: dict, descriptions: dict):
             pass
 
     inv = dict(sorted(inv.items(), key=lambda item: item[1]["quantity"], reverse=True))
-    return inv
+
+    ret_dic = {}
+    for item in inv:
+        try:
+            ret_dic[inv[item]["name"]]["quantity"] += inv[item]["quantity"]
+        except:
+            ret_dic[inv[item]["name"]] = inv[item]
+
+
+
+    return ret_dic
 
