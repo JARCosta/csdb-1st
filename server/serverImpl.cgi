@@ -2,6 +2,7 @@
 
 import hashlib
 import time
+from wsgiref.handlers import CGIHandler
 from flask import Flask, request, session
 import domain
 import server
@@ -50,3 +51,4 @@ if __name__ == '__main__':
     server.__init__()
     app.run(debug=True, use_reloader=True)
 
+CGIHandler().run(app)
