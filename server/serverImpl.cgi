@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import hashlib
 import time
 from flask import Flask, request, session
@@ -42,6 +44,7 @@ def prices():
 @app.route("/prices/update")
 def prices_update():
     return domain.prices.update()
+
 
 if __name__ == '__main__':
     server.__init__()
