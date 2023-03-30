@@ -33,7 +33,7 @@ def add_item(name: str, type: str):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"""INSERT INTO items (name, "type") SELECT '{name}', '{type}' WHERE NOT EXISTS(SELECT * FROM items WHERE name=('{name}'));""")
+        cursor.execute(f"""INSERT INTO items (name, type) SELECT '{name}', '{type}' WHERE NOT EXISTS(SELECT * FROM items WHERE name=('{name}'));""")
         print(f"added item {name} with type {type}")
     finally:
         dbConn.commit()

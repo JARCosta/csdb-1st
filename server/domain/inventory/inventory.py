@@ -29,10 +29,10 @@ def display(steamid: str):
             average_price = total_price/total_items
         else:
             average_price = 0
-        
         new_data = [{"name":"Total","quantity":total_items,"price":round(average_price,2),"total price":round(total_price,2)}]
         new_data.extend(data)
         data = new_data
+        print(data)
         return render_template("inventory/inventory.html", title="Inventory", cursor=data)
 
 
