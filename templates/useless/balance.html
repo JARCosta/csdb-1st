@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Change balance - Flask</title>
+</head>
+<body>
+    <h3>Alterar saldo da conta {{ params.get("account_number") }}</h3>
+    <form action="update" method="post">
+        <p><input type="hidden" name="account_number" value="{{params.get('account_number') }}"/></p>
+        <p>Novo saldo: <input type="text" name="balance"/></p>
+        <p><input type="submit" value="Submit"/></p>
+        </form>
+</body>
+</html>

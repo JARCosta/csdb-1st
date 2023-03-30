@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: monaco, Consolas, "Lucida Console", monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; 
+    }
+    table {
+        border-collapse: collapse;
+    }
+    td{
+        padding:3px
+    }
+</style>
+<head>
+    <meta charset="utf-8">
+    <title>List accounts - Flask</title>
+</head>
+<body style="padding:20px">
+{% if cursor %}
+    <table border="2px">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>TIN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in cursor %}
+            <tr>
+                <td>{{ record[0] }}</td>
+                <td>{{ record[1] }}</td>
+                <td><a href="delete_retailer?name={{ record[0] }}&tin={{ record[1] }}">Remover</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>
+        Adicionar novo:
+        <form action = "new_retailer" method = "post">
+            <p>Nome:<input type = "text" name = "retailer_name" /></p>
+            <p>TIN:<input type = "number" name = "retailer_tin" /></p>
+            <p><input type = "submit" value = "submit" /></p>
+         </form>   
+    </p>
+{% else %}
+    <p> Erro: ao obter dados da base de dados!</p>
+{% endif %}
+</body>
+</html>

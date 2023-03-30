@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: monaco, Consolas, "Lucida Console", monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; 
+    }
+    table {
+        border-collapse: collapse;
+    }
+    td{
+        padding:3px
+    }
+</style>
+<head>
+    <meta charset="utf-8">
+    <title>List accounts - Flask</title>
+</head>
+<body style="padding:20px">
+{% if cursor %}
+    <table border="2px">
+        <tbody>
+            <tr>
+                <th>
+                    Super Categorias
+                </th>
+            </tr>
+            {% for record in cursor %}
+            <tr>
+                <td><a href="sub?cat_name={{ record[0] }}">{{ record[0] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% else %}
+    <p> Erro: ao obter dados da base de dados!</p>
+    {% endif %}
+</body>
+</html>
