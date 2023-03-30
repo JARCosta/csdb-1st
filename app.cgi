@@ -7,7 +7,7 @@ from flask import render_template, request
 import psycopg2
 import psycopg2.extras
 
-import domain
+from root import display
 
 ## SGBD configs
 DB_HOST = "db.tecnico.ulisboa.pt"
@@ -26,7 +26,7 @@ app = Flask(__name__)
 @app.route("/")
 def root():
     try:
-        return domain.root.display()
+        return display()
     except Exception as e:
         return str(e)  # Renders a page with the error.
 
