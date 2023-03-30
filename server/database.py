@@ -55,7 +55,6 @@ def add_to_inventory(steamid: str, item_name: str, quantity: int):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        print(f"adding item {item_name} to inventory of {steamid}")
         cursor.execute(f"INSERT INTO profile_items (profile, item, quantity) VALUES ('{steamid}', '{item_name}','{quantity}');")
         print(f"added item {item_name} to inventory of {steamid}")
     finally:
@@ -67,11 +66,21 @@ def set_inventory(steamid: str, inventory: dict):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"DELETE FROM profile_items WHERE profile = '{steamid}';")
-        #TODO commit cursor before adding stuff or do transaction
+        clear_inventory(steamid)
         for item_name in inventory:
             add_item(item_name, inventory[item_name]["type"])
             add_to_inventory(steamid, item_name, inventory[item_name]["quantity"])
+    finally:
+        dbConn.commit()
+        cursor.close()
+        dbConn.close()
+
+def clear_inventory(steamid: str):
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        cursor.execute(f"DELETE FROM profile_items WHERE profile = '{steamid}';")
+        print(f"cleared inventory of {steamid}")
     finally:
         dbConn.commit()
         cursor.close()
@@ -82,14 +91,16 @@ def get_inventory(steamid: str):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        querry = """
+        querry = f"""
             SELECT ip.item, quantity, price
             FROM item_prices ip
             JOIN (
             SELECT item, MAX(date) AS max_date
             FROM item_prices
             GROUP BY item
-            ) latest ON ip.item = latest.item AND ip.date = latest.max_date join profile_items on profile_items.item = ip.item;
+            ) latest ON ip.item = latest.item AND ip.date = latest.max_date
+            JOIN profile_items ON profile_items.item = ip.item
+            WHERE profile = '{steamid}';
             """
         # cursor.execute(f"SELECT profile, profile_items.item, quantity, price, type, date FROM profile_items JOIN items on item = items.name join item_price on profile_items.item=item_price.item WHERE profile = '{steamid}' order by date;")
         cursor.execute(querry)
@@ -102,7 +113,13 @@ def get_item_list():
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"SELECT * FROM items;")
+        cursor.execute(f"""
+        SELECT items.name, sum(profile_items.quantity) as qnts FROM items
+        JOIN profile_items ON profile_items.item = items.name
+        GROUP BY items.name
+        order by qnts desc
+        ;
+        """)
         return cursor.fetchall()
     finally:
         cursor.close()
@@ -112,17 +129,22 @@ def get_latest_prices():
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        querry = """
-            SELECT ip.item, ip.date, ip.price
-            FROM item_prices ip
+        cursor.execute(f"""
+            SELECT price, sum(profile_items.quantity) AS qnts, this.item FROM profile_items
             JOIN (
-            SELECT item, MAX(date) AS max_date
-            FROM item_prices
-            GROUP BY item
-            ) latest ON ip.item = latest.item AND ip.date = latest.max_date;
-            """
-        # cursor.execute(f"SELECT item_prices.item, price, quantity FROM item_prices JOIN profile_items on profile_items.item = item_prices.item;")
-        cursor.execute(querry)
+                SELECT ip.item, ip.date, ip.price
+                FROM item_prices ip
+                JOIN (
+                SELECT item, MAX(date) AS max_date
+                FROM item_prices
+                GROUP BY item
+                ) latest ON ip.item = latest.item AND ip.date = latest.max_date
+                ORDER BY price DESC
+            ) this ON this.item = profile_items.item
+            GROUP BY this.item, price
+            ORDER BY qnts DESC
+            ;
+            """)
         return cursor.fetchall()
     finally:
         cursor.close()

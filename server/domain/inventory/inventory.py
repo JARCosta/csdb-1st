@@ -19,6 +19,20 @@ def display(steamid: str):
             data.append(temp)
         data.sort(key=lambda x: x['total price'])
         data.reverse()
+
+        total_items = 0
+        total_price = 0
+        for i in data:
+            total_items += i["quantity"]
+            total_price += i["total price"]
+        if total_items > 0:
+            average_price = total_price/total_items
+        else:
+            average_price = 0
+        
+        new_data = [{"name":"Total","quantity":total_items,"price":round(average_price,2),"total price":round(total_price,2)}]
+        new_data.extend(data)
+        data = new_data
         return render_template("inventory/inventory.html", title="Inventory", cursor=data)
 
 

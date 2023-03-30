@@ -2,7 +2,8 @@
 
 from datetime import datetime
 import json
-import os
+from alive_progress import alive_bar
+from time import sleep
 
 import requests
 import database
@@ -40,11 +41,19 @@ def get_item_list():
 
 def add_item_price(item_name: str):
     price_url = f'https://steamcommunity.com/market/priceoverview/?currency=3&appid=730&market_hash_name={item_name}'
-    response = requests.get(price_url, headers=HEADERS)
-    price = float(json.loads(response.content)['lowest_price'][:-1].replace(",","."))
-
+    while True:
+        try:
+            response = requests.get(price_url, headers=HEADERS)
+            price = float(json.loads(response.content)['lowest_price'][:-1].replace(",","."))
+            break
+        except (TypeError,KeyError) as e:
+            print(e, "at", item_name, "\n", price_url)
+            with alive_bar(600) as bar:
+                for _ in range(600):
+                    sleep(0.1)
+                    bar()
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     database.add_item_price(item_name, price, time)
 
 def get_latest_prices():
-    return [{"name":i[0],"quantity":i[2],"price":i[1]} for i in database.get_latest_prices()]
+    return [{"name":i[2],"quantity":i[1],"price":i[0], "total price":round(float(i[1])*float(i[0]),2)} for i in database.get_latest_prices()]

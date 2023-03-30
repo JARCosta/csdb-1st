@@ -1,7 +1,5 @@
 
-from alive_progress import alive_bar
 from flask import render_template
-from time import sleep
 
 import server
 
@@ -9,26 +7,24 @@ import server
 
 def display():
     data = server.get_latest_prices()
+    total_items = 0
+    total_price = 0
+    for i in data:
+        total_items += i["quantity"]
+        total_price += i["total price"]
+    if total_items > 0:
+        average_price = total_price/total_items
+    else:
+        average_price = 0
+    
+    new_data = [{"name":"Total","quantity":total_items,"price":round(average_price,2),"total price":round(total_price,2)}]
+    new_data.extend(data)
+    data = new_data
     return render_template("prices/prices.html", title="Prices", cursor=data)
 
 
 def update():
     items = server.get_item_list()
     for i in items:
-        while True:
-            try:
-                server.add_item_price(i["name"])
-                break
-            except TypeError:
-                print("TypeError at",i["name"])
-                with alive_bar(600) as bar:
-                    for _ in range(600):
-                        sleep(0.1)
-                        bar()
-            except KeyError:
-                print("KeyError at",i["name"])
-                with alive_bar(100) as bar:
-                    for _ in range(100):
-                        sleep(0.1)
-                        bar()
+        server.add_item_price(i["name"])
     return render_template("redirect_to_root.html", title="Update Prices")
