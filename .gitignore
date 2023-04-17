@@ -1,9 +1,2 @@
-*.pyc
-__pycache__/
-
-server/log.log
-log.log
-
-server/utils/config.json
-
-saves/
+__pycache__
+csDB

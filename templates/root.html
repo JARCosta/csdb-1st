@@ -1,24 +1,34 @@
-<!DOCTYPE html>
-<html>
-    <style>
-        body {
-            font-family: monaco, Consolas, "Lucida Console", monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 20px; 
-        }
-        div {
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
 <head>
-    <meta charset="utf-8">
-    <title>root</title>
+    <title>{{ title }} - csDB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> -->
+    <!-- TODO:add logo -->
+    <link rel="shortcut icon" href="https://www.nba.com/favicon-32x32.png" type="image/png">
+
 </head>
-<body style="padding:20px">
-    <div>
-        <a href="a">Gerir Categorias
-        <a href="b">Gerir Retalhistas
-        <a href="c">Listar Reposições
-        <a href="d">Listar Subcategorias
+
+<body>
+    <div id="background" >
+        <div class="overlay"></div>
     </div>
+    <div class="App-header">
+        <!-- TODO: add logo -->
+        <a href={{homeURL}} style="color: #fff;"><h1>csDB</h1></a>
+    </div>
+    <div class="App-body">
+        <table>
+            <tr>
+                <td><a href = "prices/update"><img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png"></a></td>
+                <td><a href="prices">Prices</a></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><a href="inventory">Inventory</a></td>
+            </tr>
+        </table>
+    </div>
+
 </body>
+    
 </html>

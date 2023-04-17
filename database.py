@@ -1,6 +1,5 @@
 import psycopg2
 from psycopg2.extras import DictCursor
-import server
 
 import utils
 
@@ -149,4 +148,21 @@ def get_latest_prices():
     finally:
         cursor.close()
         dbConn.close()
+
+
+def display():
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        cursor.execute("""
+            SELECT profiles.name, profile_items.item, profile_items.quantity, item_prices.date, item_prices.price FROM profiles
+            JOIN profile_items ON profiles.steamid = profile_items.profile
+            JOIN item_prices ON profile_items.item = item_prices.item
+            ORDER BY item_prices.date DESC
+        """)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        dbConn.close()
+
 

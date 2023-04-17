@@ -18,13 +18,19 @@
     </div>
     <div class="App-body">
         <table>
-            {% for line in cursor %}
+            <tr>                
+                <!-- <td><a href="prices/">Quantity</a></td> TODO /prices(/show)?sort=quantity-->
+                <td>Quantity</td>
+                <td>Name</td>                
+                <td>Price</td>
+                <td>Total Price</td>
+            </tr>
+            {% for item in cursor %}
                 <tr>
-                    {% for element in line%}
-                        <td>
-                            {{element}}
-                        </td>
-                    {% endfor %}
+                    <td>{{item["quantity"]}}</td>
+                    <td>{{item["name"]}}</td>
+                    <td>{{item["price"]}}</td>
+                    <td>{{item["total price"]}}</td>
                 </tr>
             {% endfor %}
         </table>

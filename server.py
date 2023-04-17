@@ -7,13 +7,13 @@ from time import sleep
 
 import requests
 import database
-from utils.headers import HEADERS
+from utils import HEADERS
 
 
 users = [
     {"name": "Jar", "steamid":"76561198285623099"},
     {"name": "Navi", "steamid":"76561198185395854"},
-    {"name": "Pulga", "steamid":"76561198201367491"},
+    {"name": "Pulga", "steamid":"76561198201367491"}
 ]
 
 def __init__():

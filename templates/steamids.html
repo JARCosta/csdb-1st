@@ -1,0 +1,51 @@
+<head>
+    <title>{{ title }} - csDB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> -->
+    <!-- TODO:add logo -->
+    <link rel="shortcut icon" href="https://www.nba.com/favicon-32x32.png" type="image/png">
+
+</head>
+
+<body>
+    <div id="background" >
+        <div class="overlay"></div>
+    </div>
+    <div class="App-header">
+        <!-- TODO: add logo -->
+        <a href={{homeURL}} style="color: #fff;"><h1>csDB</h1></a>
+    </div>
+    <div class="App-body">
+        
+        <table>
+            <tr>
+                <td>Auto</td>
+                <td>Name</td>
+                <td>Import</td>
+                <td>Json</td>
+            </tr>
+            {% for item in cursor %}
+            <tr>
+                <td><form action="inventory/update" method="POST" style="margin: auto;">
+                        <button type="hidden" name="steamid" value="{{item['steamid']}}" style="background: transparent;border: none;">
+                            <img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png">
+                        </button>
+                </form></td>
+                <td><a href="inventory?steamid={{item['steamid']}}">{{item['name']}}</a></td>
+                <td><form action="inventory/update" method="POST" style="margin: auto;">
+                    <input type="hidden" name="steamid" value="{{item['steamid']}}">
+                    <input type="text" name="json" required>
+                    <button type="submit" >Submit</button>  
+                </form></td>
+                <td>
+                    <a href = "https://steamcommunity.com/profiles/{{item['steamid']}}/inventory/json/730/2">redirect</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+    
+</html>
