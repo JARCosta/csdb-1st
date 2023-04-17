@@ -12,11 +12,9 @@ import psycopg2
 import psycopg2.extras
 
 
-DB_CONNECTION_STRING = utils.get_db_connection_string()
-
 def get_users():
     try:
-        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        dbConn = psycopg2.connect(utils.DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
         cursor.execute("SELECT * FROM profiles;")
         return cursor.fetchall()
@@ -29,7 +27,7 @@ def get_inventory(steamid: str):
 
 def database_get_inventory(steamid: str):
     try:
-        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        dbConn = psycopg2.connect(utils.DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
         querry = f"""
             SELECT ip.item, quantity, price

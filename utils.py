@@ -1,6 +1,6 @@
 
 import json
-
+import config
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
@@ -14,16 +14,4 @@ HEADERS = {
 
 HOME_URL = "https://web2.tecnico.ulisboa.pt/~ist199088/app.cgi/"
 
-def get_db_connection_string():
-    DB_FILE = open("config.json")
-
-    DB_INFO = json.load(DB_FILE)
-    DB_FILE.close()
-
-    DB_CONNECTION_STRING = "host=%s dbname=%s user=%s password=%s" % (
-        DB_INFO["DB_HOST"],
-        DB_INFO["DB_DATABASE"],
-        DB_INFO["DB_USER"],
-        DB_INFO["DB_PASSWORD"],
-    )
-    return DB_CONNECTION_STRING
+DB_CONNECTION_STRING = config.LOGIN

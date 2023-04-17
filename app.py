@@ -7,7 +7,7 @@ from flask import render_template, request
 
 import psycopg2
 import psycopg2.extras
-import root
+import root as root
 import inventory
 import serverTest
 import utils
@@ -15,7 +15,8 @@ import prices
 import database
 
 
-app = Flask(__name__)
+app = Flask(__name__)#, template_folder='domain', static_folder='domain/static')
+app.secret_key = 'your_secret_key'
 
 @app.route("/")
 def root_display():
@@ -56,4 +57,6 @@ def database_display():
     except Exception as e:
         return str(e)
 
-CGIHandler().run(app)
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=True)
+

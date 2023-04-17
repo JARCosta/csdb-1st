@@ -39,7 +39,7 @@ def add_item_price(item_name: str, time: datetime):
             break
         except (TypeError,KeyError) as e:
             print(e, "at", item_name, "\n", price_url)
-            sleep(60))
+            sleep(60)
     database.add_item_price(item_name, price, time)
 
 def update():
