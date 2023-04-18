@@ -14,4 +14,11 @@ HEADERS = {
 
 HOME_URL = "https://web2.tecnico.ulisboa.pt/~ist199088/app.cgi/"
 
-DB_CONNECTION_STRING = config.LOGIN
+DB_INFO = config.LOGIN
+
+DB_CONNECTION_STRING = "host=%s dbname=%s user=%s password=%s" % (
+    DB_INFO["DB_HOST"],
+    DB_INFO["DB_DATABASE"],
+    DB_INFO["DB_USER"],
+    DB_INFO["DB_PASSWORD"],
+)
