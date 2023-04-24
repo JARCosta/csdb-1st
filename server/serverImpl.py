@@ -6,6 +6,7 @@ import server
 
 app = Flask(__name__, template_folder='domain', static_folder='domain/static')
 app.secret_key = 'your_secret_key'
+app.debug = True
 
 @app.before_request
 def before_request():
@@ -45,5 +46,5 @@ def prices_update():
 
 if __name__ == '__main__':
     server.__init__()
-    app.run(debug=True, use_reloader=True)
+    app.run(use_reloader=True)
 

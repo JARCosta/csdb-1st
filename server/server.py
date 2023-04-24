@@ -7,7 +7,7 @@ from time import sleep
 
 import requests
 import database
-from utils.headers import HEADERS
+from utils import HEADERS
 
 
 users = [

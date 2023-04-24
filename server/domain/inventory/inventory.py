@@ -1,10 +1,9 @@
 import json
 from flask import render_template
 import requests
-from domain.inventory import inventoryImpl
 
 import server
-from utils.headers import HEADERS
+from utils import HEADERS
 
 
 def display(steamid: str):
@@ -36,6 +35,40 @@ def display(steamid: str):
         return render_template("inventory/inventory.html", title="Inventory", cursor=data)
 
 
+def json_to_inv(inventory: dict, descriptions: dict):
+    inv = {}
+
+    for item in descriptions:
+        values = descriptions[item]
+        if values["marketable"] == 1:
+            inv[item] = {
+                    "quantity": 0,
+                    "name" : values["market_hash_name"],
+                    "type": values["type"],
+                }
+
+    for item in inventory:
+        try:
+            item_key = inventory[item]['classid'] + "_" + inventory[item]['instanceid']
+            inv[item_key]['quantity'] += 1
+        except:
+            pass
+
+    inv = dict(sorted(inv.items(), key=lambda item: item[1]["quantity"], reverse=True))
+
+
+    ret_dic = {}
+    for item in inv: # for each element change its key from classid to market_hash_name
+        try:
+            ret_dic[inv[item]["name"]]["quantity"] += inv[item]["quantity"]
+            print("" + inv[item]["name"] + "\033[31m is repeated, summing quantities \033[0m")
+        except:
+            ret_dic[inv[item]["name"]] = inv[item]
+            print("" + inv[item]["name"] + "\033[32m adding new item \033[0m")
+
+    return ret_dic
+
+
 def update(steamid, js):
     if js == None:
         inventory_url = f"https://steamcommunity.com/profiles/{steamid}/inventory/json/730/2"
@@ -44,11 +77,8 @@ def update(steamid, js):
     content = json.loads(js)
     inventory, descriptions = content['rgInventory'], content['rgDescriptions']
     
-    inv = inventoryImpl.json_to_inv(inventory, descriptions)
-    # for i in inv:
-    #     print(i, inv[i])
+    inv = json_to_inv(inventory, descriptions)
     server.set_inventory(steamid, inv)
-    # inventoryImpl.save_inv(steamid, inv)
 
     return render_template("redirect_to_root.html", title="Update Prices")
 

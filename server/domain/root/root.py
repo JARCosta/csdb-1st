@@ -2,8 +2,8 @@ from flask import render_template, session
 import psycopg2
 from psycopg2.extras import DictCursor
 
-from utils.dbConnection import get_db_connection_string
-from utils.log import log_join
+from utils import get_db_connection_string
+from utils import log_join
 
 
 def update_inv():

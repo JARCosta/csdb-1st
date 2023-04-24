@@ -4,7 +4,6 @@ MAX_RETRIES = 5
 
 # Import modules and sub-packages
 from .inventory import *
-from .inventoryImpl import *
 
 # Execute code on package import
 print('Package root initialized')
