@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2.extras import DictCursor
+from datetime import datetime
 import server
 
 import utils
@@ -29,18 +30,19 @@ def get_users():
         cursor.close()
         dbConn.close()
 
-def add_item(name: str, type: str):
+def create_item(item_name: str, item_type: str):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"""INSERT INTO items (name, type) SELECT '{name}', '{type}' WHERE NOT EXISTS(SELECT * FROM items WHERE name=('{name}'));""")
-        print(f"added item {name} with type {type}")
+        cursor.execute(f"""INSERT INTO items (name, type) SELECT '{item_name}', '{item_type}' WHERE NOT EXISTS(SELECT * FROM items WHERE name=('{item_name}'));""")
+        print(f"added item {item_name} with type {item_type}")
     finally:
         dbConn.commit()
         cursor.close()
         dbConn.close()
 
-def add_item_price(item_name: str, price: int, date: str):
+def set_item_price(item_name: str, price: int):
+    date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
@@ -51,14 +53,50 @@ def add_item_price(item_name: str, price: int, date: str):
         cursor.close()
         dbConn.close()
 
-def add_to_inventory(steamid: str, item_name: str, quantity: int):
+def add_to_inventory(steamid: str, item_name: str, quantity: int, auto: bool):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"INSERT INTO profile_items (profile, item, quantity) VALUES ('{steamid}', '{item_name}','{quantity}');")
+        #TODO: maybe store date of item addition
+        cursor.execute(f"INSERT INTO profile_items (profile, item, quantity, auto) SELECT '{steamid}', '{item_name}','{quantity}', '{auto}' WHERE NOT EXISTS(SELECT * FROM profile_items WHERE profile = '{steamid}' AND item = '{item_name}');")
+                                                # quantity = quantity + new quantity OR quantity = new quantity ?
+        cursor.execute(f"UPDATE profile_items SET quantity = {quantity} WHERE profile = '{steamid}' AND item = '{item_name}';")
+        
+        # set price as 0 if not set
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        cursor.execute(f"INSERT INTO item_prices (item, price, date) SELECT '{item_name}', '0', '{date}' WHERE NOT EXISTS( SELECT * FROM item_prices WHERE item = '{item_name}' );")
+
+
         print(f"added item {item_name} to inventory of {steamid}")
     finally:
         dbConn.commit()
+        cursor.close()
+        dbConn.close()
+
+def get_inventory(steamid: str):
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        querry = f"""
+                SELECT ip.item, quantity, price, items.type
+                FROM item_prices ip
+                JOIN (
+                SELECT item, MAX(date) AS max_date
+                FROM item_prices
+                GROUP BY item
+                ) latest ON ip.item = latest.item AND ip.date = latest.max_date
+                JOIN profile_items ON profile_items.item = ip.item
+                JOIN items on ip.item = items.name
+                WHERE profile = '{steamid}' AND quantity > 0 
+        """
+                # AND (
+                #     items.type like '%Base Grade%' OR
+                #     items.type like '%Sticker%' OR
+                #     items.type like '%Qualidade%'
+	            #     );
+        cursor.execute(querry)
+        return cursor.fetchall()
+    finally:
         cursor.close()
         dbConn.close()
 
@@ -66,48 +104,26 @@ def set_inventory(steamid: str, inventory: dict):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        clear_inventory(steamid)
+        clear_auto_inventory(steamid)
         for item_name in inventory:
-            add_item(item_name, inventory[item_name]["type"])
-            add_to_inventory(steamid, item_name, inventory[item_name]["quantity"])
+            create_item(item_name, inventory[item_name]["type"])
+            add_to_inventory(steamid, item_name, inventory[item_name]["quantity"], True)
     finally:
         dbConn.commit()
         cursor.close()
         dbConn.close()
 
-def clear_inventory(steamid: str):
+def clear_auto_inventory(steamid: str):
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
-        cursor.execute(f"DELETE FROM profile_items WHERE profile = '{steamid}';")
+        cursor.execute(f"DELETE FROM profile_items WHERE profile = '{steamid}' AND auto = 'true';")
         print(f"cleared inventory of {steamid}")
     finally:
         dbConn.commit()
         cursor.close()
         dbConn.close()
 
-def get_inventory(steamid: str):
-    '''[profile, item_name, quantity, price, type, date]'''
-    try:
-        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
-        cursor = dbConn.cursor(cursor_factory=DictCursor)
-        querry = f"""
-            SELECT ip.item, quantity, price
-            FROM item_prices ip
-            JOIN (
-            SELECT item, MAX(date) AS max_date
-            FROM item_prices
-            GROUP BY item
-            ) latest ON ip.item = latest.item AND ip.date = latest.max_date
-            JOIN profile_items ON profile_items.item = ip.item
-            WHERE profile = '{steamid}';
-            """
-        # cursor.execute(f"SELECT profile, profile_items.item, quantity, price, type, date FROM profile_items JOIN items on item = items.name join item_price on profile_items.item=item_price.item WHERE profile = '{steamid}' order by date;")
-        cursor.execute(querry)
-        return cursor.fetchall()
-    finally:
-        cursor.close()
-        dbConn.close()
 
 def get_item_list():
     try:
@@ -130,7 +146,7 @@ def get_latest_prices():
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=DictCursor)
         cursor.execute(f"""
-            SELECT price, sum(profile_items.quantity) AS qnts, this.item FROM profile_items
+            SELECT price, sum(profile_items.quantity), this.item FROM profile_items
             JOIN (
                 SELECT ip.item, ip.date, ip.price
                 FROM item_prices ip
@@ -142,11 +158,25 @@ def get_latest_prices():
                 ORDER BY price DESC
             ) this ON this.item = profile_items.item
             GROUP BY this.item, price
-            ORDER BY qnts DESC
+            ORDER BY price * sum(profile_items.quantity) DESC
             ;
             """)
         return cursor.fetchall()
     finally:
+        cursor.close()
+        dbConn.close()
+
+def delete_item(item_name: str):
+    try:
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor(cursor_factory=DictCursor)
+        cursor.execute(f"""
+        DELETE FROM item_prices WHERE item = '{item_name}';
+        DELETE FROM profile_items WHERE item = '{item_name}';
+        DELETE from items WHERE name = '{item_name}';
+        """)
+    finally:
+        dbConn.commit()
         cursor.close()
         dbConn.close()
 

@@ -26,13 +26,18 @@ def inventory():
     steamid = request.args.get('steamid') or None
     return domain.inventory.display(steamid)
 
+@app.route("/inventory/add", methods=['POST'])
+def inv_add():
+    item_name = request.form["name"]
+    quantity = request.form["quantity"]
+    item_type = request.form["type"]
+    steamid = request.form["steamid"]
+    return domain.inventory.add(steamid, item_name, item_type, quantity)
+
 @app.route("/inventory/update", methods=['POST'])
 def inv_update():
-    steamid = request.form["steamid"]
-    try:
-        json = request.form["json"]
-    except KeyError:
-        json = None
+    steamid = request.form["steamid"] or None
+    json = request.form["json"] or None
     return domain.inventory.update(steamid, json)
 
 

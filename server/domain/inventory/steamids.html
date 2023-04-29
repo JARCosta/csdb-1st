@@ -13,7 +13,7 @@
     </div>
     <div class="App-header">
         <!-- <img src="https://www.nba.com/apple-touch-icon.png" class="App-logo" alt="logo" /> -->
-        <a href="http://localhost:5000/" style="color: #fff;"><h1>csDB</h1></a>
+        <a href="http://localhost:5000/"><h1>csDB</h1></a>
     </div>
     <div class="App-body">
         
@@ -34,7 +34,7 @@
                 <td><a href="inventory?steamid={{item['steamid']}}">{{item['name']}}</a></td>
                 <td><form action="/inventory/update" method="POST" style="margin: auto;">
                     <input type="hidden" name="steamid" value="{{item['steamid']}}">
-                    <input type="text" name="json" required>
+                    <input type="text" class="jsontextbox" name="json" required>
                     <button type="submit" >Submit</button>  
                 </form></td>
                 <td>

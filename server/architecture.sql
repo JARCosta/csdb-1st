@@ -22,6 +22,7 @@ CREATE TABLE profile_items (
   profile VARCHAR(255) NOT NULL,
   item VARCHAR(255) NOT NULL,
   quantity INT NOT NULL,
+  auto BOOL DEFAULT TRUE,
   PRIMARY KEY (profile, item),
   FOREIGN KEY (profile) REFERENCES profiles(steamid),
   FOREIGN KEY (item) REFERENCES items(name)

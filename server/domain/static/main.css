@@ -15,9 +15,9 @@ body
     /* width: 100%; */
     height: 100%;
     font-size: 20px;
-    font-family: 'SourceSansPro','Helvetica Neue',Helvetica,Arial,sans-serif;
-    font-weight: 300;
-    color: #fff;
+    font-family: Helvetica;
+    font-weight: bold;
+    color: #fdc;
     background: #1b1b1b;
     overflow-x: hidden;
 }
@@ -31,8 +31,6 @@ body
     width: 100%;
     height: 100%;
     background: url(https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans/3381077/b51d7794f31e3795a0335eab5ae103b29ed4b439.png) center / cover;
-    /* background: url(https://storage.googleapis.com/proudcity/santaanaca/uploads/2022/03/basketball-courts-at-memorial-park.jpg) center / cover; */
-    /* background: url(https://cdnmd.lavoz.com.ar/sites/default/files/nota_periodistica/nba_court_1590082458.jpg) center / cover; */
     -ms-transform: scale(1.2);
     -webkit-transform: scale(1.2);
     transform: scale(1.2);
@@ -110,6 +108,7 @@ a
 {
     color: #ccf;
     text-decoration: none;
+    /* background: #fdc2; */
 }
 
 .miniature{
@@ -124,14 +123,10 @@ a
     filter: invert(1);
 }
 
-#team-logo {
-    border-radius: 50%;
-
-}
-
 
 td{
-	background-color: #fff2;
+	color: white;
+	background-color: #fdc2;
 }
 
 tr{
@@ -140,7 +135,7 @@ tr{
 	/* padding-left: 5px; */
 }
 tr:hover{
-    background-color: #fff2;
+    background-color: #fdc2;
 }
 
 @font-face {
@@ -154,7 +149,47 @@ h1,
 h4
 {
     font-size: 2em;
-    font-family: 'KlavikaBold' ,'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: KlavikaBold;
     margin: 10px 0;
     text-transform: uppercase;
+    color: #fdc;
 }
+
+input,
+select,
+option,
+button {
+    background: #fdc2;
+    border: none;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+}
+
+
+/* input[type=text] {
+} */
+
+.jsontextbox {
+    width: 60%;
+}
+
+
+::placeholder{
+    color: inherit;
+}
+
+/* select{
+} */
+
+option{
+    background: #0005;
+}
+
+button{
+    color: #ccf;
+    cursor: pointer;
+}
+
+
+

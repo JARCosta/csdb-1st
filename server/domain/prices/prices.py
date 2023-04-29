@@ -26,5 +26,5 @@ def display():
 def update():
     items = server.get_item_list()
     for i in items:
-        server.add_item_price(i["name"])
+        server.update_item_price(i["name"])
     return render_template("redirect_to_root.html", title="Update Prices")

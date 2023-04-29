@@ -31,22 +31,36 @@ def display(steamid: str):
         new_data = [{"name":"Total","quantity":total_items,"price":round(average_price,2),"total price":round(total_price,2)}]
         new_data.extend(data)
         data = new_data
-        print(data)
-        return render_template("inventory/inventory.html", title="Inventory", cursor=data)
+
+        type_selection = list(set([i["type"] for i in data[1:]]))
+        print(type_selection)
+
+
+        return render_template("inventory/inventory.html", title="Inventory", cursor=data, steamid=steamid, type_selection=type_selection)
+
+def add(steamid: str, item_name: str, item_type: str, quantity: int):
+    server.add_item(steamid,item_name,item_type, quantity)
+    return render_template("redirect.html", title="Add Item", page = "inventory?steamid=" + steamid)
 
 
 def json_to_inv(inventory: dict, descriptions: dict):
     inv = {}
 
+    # create a dictionary with all the items in the inventory
     for item in descriptions:
         values = descriptions[item]
         if values["marketable"] == 1:
+
+            type =  values["tags"][1]["category"]
+            if type == "Quality" or type == "ItemSet":
+                type =  values["tags"][0]["name"]
             inv[item] = {
                     "quantity": 0,
                     "name" : values["market_hash_name"],
-                    "type": values["type"],
+                    "type": type,
                 }
 
+    # set the quantity of each item
     for item in inventory:
         try:
             item_key = inventory[item]['classid'] + "_" + inventory[item]['instanceid']
@@ -56,7 +70,7 @@ def json_to_inv(inventory: dict, descriptions: dict):
 
     inv = dict(sorted(inv.items(), key=lambda item: item[1]["quantity"], reverse=True))
 
-
+    # merge items with the same name
     ret_dic = {}
     for item in inv: # for each element change its key from classid to market_hash_name
         try:
@@ -80,9 +94,7 @@ def update(steamid, js):
     inv = json_to_inv(inventory, descriptions)
     server.set_inventory(steamid, inv)
 
-    return render_template("redirect_to_root.html", title="Update Prices")
-
-
+    return render_template("redirect.html", title="Update Prices", page = "inventory?steamid=" + steamid)
 
 
 
