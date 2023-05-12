@@ -3,4 +3,10 @@
     "DB_USER" : "ist1xxxxx",
     "DB_DATABASE" : "ist1xxxxx",
     "DB_PASSWORD" : "password"
+    ,
+    "host" : "horton.db.elephantsql.com",
+    "dbname" : "xxxxxxxx",
+    "user" : "xxxxxxxx",
+    "password" : "xxxxxxxxxxx-xxxxxxxxxxxxxx-xxxxx",
+    "port" : "5432"
 }

@@ -6,20 +6,11 @@ import server
 
 
 def display():
-    data = server.get_latest_prices()
-    total_items = 0
-    total_price = 0
-    for i in data:
-        total_items += i["quantity"]
-        total_price += i["total price"]
-    if total_items > 0:
-        average_price = total_price/total_items
-    else:
-        average_price = 0
+    total,data = server.get_latest_prices()
     
-    new_data = [{"name":"Total","quantity":total_items,"price":round(average_price,2),"total price":round(total_price,2)}]
-    new_data.extend(data)
-    data = new_data
+    total.extend(data)
+    data = total
+
     return render_template("prices/prices.html", title="Prices", cursor=data)
 
 

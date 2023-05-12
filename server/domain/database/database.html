@@ -1,0 +1,77 @@
+<head>
+    <title>{{ title }} - csDB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> -->
+    <link rel="shortcut icon" href="https://www.nba.com/favicon-32x32.png" type="image/png">
+
+</head>
+
+<body>
+    <div id="background" >
+        <div class="overlay"></div>
+    </div>
+    <div class="App-header">
+        <!-- <img src="https://www.nba.com/apple-touch-icon.png" class="App-logo" alt="logo" /> -->
+        <a href="http://localhost:5000/" ><h1>csDB</h1></a>
+    </div>
+    
+    <div class="column">
+        <h3>Steam Profiles</h3>
+        <table>
+            <tr>                
+                <td>Name</td>                
+                <td>SteamId</td>
+                <td>Item Size(Unique Items)</td>
+                <td>Inventory Price</td>
+            </tr>
+            {% for item in users %}
+            <tr>
+                {% for key in item %}
+                <td>{{key}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <h3>Items by Profile</h3>
+        <!--TODO sort by (th clickable)-->
+        <table>
+            <tr>                
+                <td>Owner</td>
+                <td>Item</td>                
+                <td>Quantity</td>
+                <td>Price</td>
+                <td>Updated</td>
+            </tr>
+            {% for item in profile_items %}
+            <tr>
+                {% for key in item %}
+                <td>{{key}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="column">
+        <h3>Prices by Item</h3>
+        <table>
+            <tr>                
+                <td>Item Name</td>
+                <td>Quantity</td>                
+                <td>Price</td>
+                <td>Total Price</td>
+            </tr>
+            {% for item in items %}
+            <tr>
+                {% for key in item %}
+                <td>{{key}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+    
+</html>

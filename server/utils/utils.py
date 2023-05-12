@@ -17,10 +17,8 @@ def get_db_connection_string():
     DB_INFO = json.load(DB_FILE)
     DB_FILE.close()
 
-    DB_CONNECTION_STRING = "host=%s dbname=%s user=%s password=%s" % (
-        DB_INFO["DB_HOST"],
-        DB_INFO["DB_DATABASE"],
-        DB_INFO["DB_USER"],
-        DB_INFO["DB_PASSWORD"],
-    )
-    return DB_CONNECTION_STRING
+    DB_CONNECTION_STRING = ""
+    for i in DB_INFO:
+        DB_CONNECTION_STRING += f"{i}='{DB_INFO[i]}' "
+
+    return DB_CONNECTION_STRING[:-1] # remove the last " "

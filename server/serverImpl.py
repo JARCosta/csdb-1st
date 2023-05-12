@@ -40,6 +40,12 @@ def inv_update():
     json = request.form["json"] or None
     return domain.inventory.update(steamid, json)
 
+@app.route("/inventory/alter", methods=["POST"])
+def inv_alter():
+    steamid = request.form["steamid"]
+    item = request.form["item"]
+    quantity = request.form["quantity"]
+    return domain.inventory.alter(steamid, item, quantity)
 
 @app.route("/prices")
 def prices():
@@ -48,6 +54,11 @@ def prices():
 @app.route("/prices/update")
 def prices_update():
     return domain.prices.update()
+
+
+@app.route("/database")
+def database():
+    return domain.database.display()
 
 if __name__ == '__main__':
     server.__init__()

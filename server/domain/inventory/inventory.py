@@ -13,9 +13,8 @@ def display(steamid: str):
     else:
         data = []
         for i in server.get_inventory(steamid):
-            temp = i
-            temp["total price"] = round( i["quantity"] * i["price"] ,2)
-            data.append(temp)
+            i["total price"] = round( i["quantity"] * (i["price"] or 0) ,2)
+            data.append(i)
         data.sort(key=lambda x: x['total price'])
         data.reverse()
 
@@ -33,12 +32,14 @@ def display(steamid: str):
         data = new_data
 
         type_selection = list(set([i["type"] for i in data[1:]]))
-        print(type_selection)
+        # print(type_selection)
 
 
         return render_template("inventory/inventory.html", title="Inventory", cursor=data, steamid=steamid, type_selection=type_selection)
 
 def add(steamid: str, item_name: str, item_type: str, quantity: int):
+    if item_name.__contains__("https://steamcommunity.com/market/listings/730/"):
+        item_name = item_name.replace("https://steamcommunity.com/market/listings/730/","")
     server.add_item(steamid,item_name,item_type, quantity)
     return render_template("redirect.html", title="Add Item", page = "inventory?steamid=" + steamid)
 
@@ -99,7 +100,11 @@ def update(steamid, js):
 
 
 
-
+def alter(steamid, item, quantity):
+    server.alter_item(steamid, item, quantity)
+    return display(steamid)
+    return render_template("redirect.html", title="Update Prices", page = "inventory?steamid=" + steamid)
+    return str([steamid, item, quantity])
 
 
 

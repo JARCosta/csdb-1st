@@ -30,9 +30,8 @@ CREATE TABLE profile_items (
 
 CREATE TABLE item_prices (
   item VARCHAR(255) NOT NULL,
-  -- date VARCHAR(255) NOT NULL,
   date TIMESTAMP NOT NULL,
-	price DECIMAL(10,2) NOT NULL,
+	price DECIMAL(10,2),
 	PRIMARY KEY (item, date),
   FOREIGN KEY (item) REFERENCES items(name)
 );

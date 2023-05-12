@@ -18,41 +18,53 @@
     <div class="App-body">
         <table>
             <tr>
-                <td>
-                    <input type="text" name="quantity" placeholder="quantity" required>
-                </td>
-                <td>
-                    <input type="text" name="name" placeholder="name" required>
-                </td>
-                <td>
-                    <select name="type">
-                        {% for item in type_selection %}
+                <form  action="/inventory/add" method="POST">
+
+                    <td>
+                        <input type="text" name="quantity" placeholder="Quantity" required>
+                    </td>
+                    <td>
+                        <input type="text" name="name" placeholder="Name / Market URL" required>
+                    </td>
+                    <td>
+                        <select name="type">
+                            {% for item in type_selection %}
                             <option value="{{item}}">{{item}}</option>
-                        {% endfor %}
-                      </select>
-                </td>
-                <!-- <td style="background-color: #0000"></td> -->
-                <td>
-                    <input type="hidden" name="steamid" value="{{steamid}}">
-                    <button type="submit" >Submit</button>
-                </td>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <!-- <td style="background-color: #0000"></td> -->
+                    <td>
+                        <input type="hidden" name="steamid" value="{{steamid}}">
+                        <button type="submit" >Submit</button>
+                    </td>
+                </form>
             </tr>
         </table>
         <table>
-            <tr>
-                <!-- <td><a href = "inventory/update"><img class="miniature" id='inverted' src="https://cdn-icons-png.flaticon.com/128/4140/4140115.png"></a></td> -->
-                <td>Name</td>
-                <td>Quantity</td>
-                <td>Price</td>
-                <td>Total</td>
-            </tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
             {% for item in cursor %}
+            <form  action="/inventory/alter" method="POST">
+                <input type="hidden" name="steamid" value="{{steamid}}">
                 <tr>
-                    <td>{{item["name"]}}</td>
-                    <td>{{item["quantity"]}}</td>
+                    <td>
+                        <input type="hidden" name="item" value="{{item["name"]}}">
+                        {{item["name"]}}
+                    </td>
+                    <td>
+                    <!-- <td style="width: 11%;"> -->
+                        <div style="text-align: left;">
+                            <input class="inline" type="text" name="quantity" value="{{item["quantity"]}}" required onclick="this.select();">
+                            <button type="submit">Update</button>
+                        </div>
+                    </td>
                     <td>{{item["price"]}}</td>
                     <td>{{item["total price"]}}</td>
                 </tr>
+            </form>
             {% endfor %}
         </table>
     </div>
