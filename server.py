@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import json
-from alive_progress import alive_bar
+# from alive_progress import alive_bar
 from time import sleep
 
 import requests
@@ -79,10 +79,11 @@ def update_item_price(item_name: str):
             # if(e == "lowest_price"):
             print(price_url)
             print(e, "at", item_name)
-            with alive_bar(600) as bar:
-                for _ in range(600):
-                    sleep(0.1)
-                    bar()
+            sleep(60)
+            # with alive_bar(600) as bar:
+            #     for _ in range(600):
+            #         sleep(0.1)
+            #         bar()
     database.set_item_price(item_name, price)
 
 def get_latest_prices():
