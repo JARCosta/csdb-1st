@@ -1,5 +1,5 @@
 import json
-
+from .login import *
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
@@ -18,6 +18,7 @@ def get_db_connection_string():
     DB_FILE.close()
 
     DB_CONNECTION_STRING = ""
+    DB_INFO = login
     for i in DB_INFO:
         DB_CONNECTION_STRING += f"{i}='{DB_INFO[i]}' "
 

@@ -1,2 +1,2 @@
 clear
-python3 server/serverImpl.py
+python3 serverImpl.py
