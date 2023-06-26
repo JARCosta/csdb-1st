@@ -19,15 +19,15 @@ users = [
 
 def __init__():
     start = datetime.now()
-    database.add_users(users)
+    database.store_user_list(users)
     print(f"Query took {datetime.now() - start}")
 
 
 def add_user(name: str, steamid: str):
     database.add_user(name, steamid)
 
-def get_users():
-    return database.get_users()
+def get_user_list():
+    return database.get_user_list()
 
 def get_users_db():
     return database.get_users_db()

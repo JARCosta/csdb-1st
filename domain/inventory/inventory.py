@@ -8,7 +8,8 @@ from utils import HEADERS
 
 def display(steamid: str):
     if not steamid:
-        data = [{"name": user["name"],"steamid": user["steamid"]} for user in server.get_users()]
+        data = server.get_user_list()
+        # data = [{"name": user["name"],"steamid": user["steamid"]} for user in server.get_users()]
         return render_template("inventory/steamids.html", title="Inventory", cursor=data)
     else:
         data = []
